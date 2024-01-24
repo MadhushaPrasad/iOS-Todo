@@ -7,23 +7,23 @@
 
 import UIKit
 
-class EntryViewController: UIViewController {
+class EntryViewController: UIViewController , UITextFieldDelegate{
 
+    @IBOutlet var field : UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        field.delegate = self
         // Do any additional setup after loading the view.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        saveTask()
+        return true
     }
-    */
+    
+    @IBAction func saveTask(){
+        
+    }
 
 }
