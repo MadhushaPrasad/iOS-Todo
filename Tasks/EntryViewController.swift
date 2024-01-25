@@ -17,13 +17,6 @@ class EntryViewController: UIViewController , UITextFieldDelegate{
         super.viewDidLoad()
         field.delegate = self
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "save", style: .done, target: self,action: #selector(saveTask))
-        
-        
-        // setup
-        if !UserDefaults().bool(forKey: "setup"){
-            UserDefaults().set(true, forKey: "setup")
-            UserDefaults().set("0", forKey: "count")
-        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

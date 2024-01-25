@@ -17,7 +17,18 @@ class ViewController: UIViewController {
         self.title = "Tasks"
         tableView.delegate = self
         tableView.dataSource = self
+        
+        
+        
+        // setup
+        if !UserDefaults().bool(forKey: "setup"){
+            UserDefaults().set(true, forKey: "setup")
+            UserDefaults().set("0", forKey: "count")
+        }
+        
+        
         // Get all current tasks
+        updateTasks()
     }
     
     func updateTasks(){
@@ -53,6 +64,11 @@ class ViewController: UIViewController {
 extension ViewController : UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
+        vc.title = "New Task"
+        vc.task = tasks[indexPath.row]
+        navigationController!.pushViewController(vc, animated: true)
     }
 }
 
