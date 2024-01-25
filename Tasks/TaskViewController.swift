@@ -5,23 +5,25 @@
 //  Created by Madhusha Prasad on 2024-01-24.
 //
 
+// TaskViewController.swift
+
 import UIKit
 
 class TaskViewController: UIViewController {
     
+    weak var delegate: TaskViewControllerDelegate?
+    
     @IBOutlet var label: UILabel!
     
     var task: String?
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         label.text = task
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "save", style: .done, target: self,action: #selector(deleteTask))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "delete", style: .done, target: self, action: #selector(deleteTask))
     }
-    
     
     @objc func deleteTask(){
         guard let currentTask = task else {
@@ -32,7 +34,6 @@ class TaskViewController: UIViewController {
             return
         }
 
-        // Find the position of the task to be deleted
         var taskPositionToDelete: Int?
         for x in 1...count {
             if let taskInUserDefaults = UserDefaults().value(forKey: "task_\(x)") as? String,
@@ -42,16 +43,28 @@ class TaskViewController: UIViewController {
             }
         }
 
-        // Remove the task from UserDefaults
         if let position = taskPositionToDelete {
-            UserDefaults().setValue(nil, forKey: "task_\(position)")
+            let alert = UIAlertController(title: "Confirm Deletion", message: "Are you sure you want to delete this task?", preferredStyle: .alert)
 
-            // Update the count
-            let newCount = count - 1
-            UserDefaults().setValue(newCount, forKey: "count")
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
-            navigationController?.popViewController(animated: true)
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
+                // Remove the task from UserDefaults
+                UserDefaults().setValue(nil, forKey: "task_\(position)")
+
+                // Update the count
+                let newCount = count - 1
+                UserDefaults().setValue(newCount, forKey: "count")
+
+                // Notify the delegate that a task has been deleted
+                self.delegate?.taskDeleted()
+
+                self.navigationController?.popViewController(animated: true)
+            }))
+
+            present(alert, animated: true, completion: nil)
         }
+
     }
 
 }

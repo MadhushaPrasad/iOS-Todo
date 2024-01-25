@@ -72,7 +72,7 @@ extension ViewController : UITableViewDelegate{
         let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
         vc.title = "New Task"
         vc.task = tasks[indexPath.row]
-        vc.delegate = self  // Ensure this line is correct
+        vc.delegate = self
         navigationController!.pushViewController(vc, animated: true)
     }
 }
