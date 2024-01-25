@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, TaskViewControllerDelegate {
     
     @IBOutlet var tableView : UITableView!
     var tasks = [String]()
@@ -19,13 +19,12 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         
         
-        
         // setup
-        if !UserDefaults().bool(forKey: "setup"){
-            UserDefaults().set(true, forKey: "setup")
-            UserDefaults().set("0", forKey: "count")
+        if !UserDefaults.standard.bool(forKey: "setup") {
+            UserDefaults.standard.set(true, forKey: "setup")
+            UserDefaults.standard.set(0, forKey: "count")  // Set count as an integer
         }
-        
+
         
         // Get all current tasks
         updateTasks()
@@ -43,6 +42,11 @@ class ViewController: UIViewController {
             }
         }
         
+        tableView.reloadData()
+    }
+    
+    func taskDeleted() {
+        updateTasks()
         tableView.reloadData()
     }
     
@@ -64,10 +68,11 @@ class ViewController: UIViewController {
 extension ViewController : UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
+
         let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
         vc.title = "New Task"
         vc.task = tasks[indexPath.row]
+        vc.delegate = self  // Ensure this line is correct
         navigationController!.pushViewController(vc, animated: true)
     }
 }

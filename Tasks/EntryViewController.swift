@@ -24,25 +24,33 @@ class EntryViewController: UIViewController , UITextFieldDelegate{
         return true
     }
     
-    @objc func saveTask(){
-        guard let text = field.text, text.isEmpty else {
+    @objc func saveTask() {
+        guard let text = field.text, !text.isEmpty else {
+            let alert = UIAlertController(title: "Error", message: "Task cannot be empty", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
             return
         }
-        
-        guard let count = UserDefaults().value(forKey: "count") as? Int else {
+
+        guard let count = UserDefaults.standard.integer(forKey: "count") as? Int else {
+            print("Error retrieving count from UserDefaults.")
             return
         }
-        
+
         let newCount = count + 1
-        
-        UserDefaults().setValue(newCount, forKey: "count")
-        UserDefaults().setValue(text, forKey: "task_\(newCount)")
-        
-        update?()
-        
-        navigationController?.popViewController(animated: true)
-        
-        
+
+        UserDefaults.standard.setValue(newCount, forKey: "count")
+        UserDefaults.standard.setValue(text, forKey: "task_\(newCount)")
+
+        // Show success alert
+        let successAlert = UIAlertController(title: "Success", message: "Task added successfully", preferredStyle: .alert)
+        successAlert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            self.update?()
+            self.navigationController?.popViewController(animated: true)
+        })
+
+        present(successAlert, animated: true, completion: nil)
     }
+
 
 }
